@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main_layout.html">
+
+<div layout:fragment="siteContent">
+
+    <div class="row">
+        <div class="mt-2" style="background-color: #E4F64A">
+            <h3 class="text-center fw-normal">Панель Администратора</h3>
+        </div>
+        <div class="mt-4 d-flex  justify-content-between" style="font-size: 18px">
+            <div>
+                Общее количество обзоров на книг :
+                <strong> <span th:text="${bookCount}"> </span></strong>
+            </div>
+            <div>
+                Количество пользователей сайта :
+                <strong> <span th:text="${usersCount}"> </span> </strong>
+            </div>
+            <div>
+                Количество постов на сайте :
+                <strong> <span th:text="${usersCount}"></span> </strong>
+            </div>
+
+        </div>
+        <hr>
+
+        <div class="mt-5 d-flex justify-content-center">
+            <div class="col-sm-6 pe-2">
+                <h5>Добавить новый обзор на книгу</h5>
+                <form class="form" method="POST" enctype="multipart/form-data" action="/books/add">
+                    <label for="name">Название:</label>
+                    <input class="form-control" type="text" id="name" name="name" required><br>
+
+
+                    <label for="year">Год выпуска:</label>
+                    <input class="form-control" type="number" id="year" name="year" required><br>
+
+                    <label for="point">Итоговая оценка:</label>
+                    <input class="form-control" type="number" id="point" name="point" required><br>
+
+                    <label for="photo">Изображение </label>
+                    <input class="form-control" type="file" id="photo" name="photo" required><br>
+
+                    <label for="description">Обзор:</label><br>
+                    <textarea rows="5" class="form-control" id="description" name="description" required></textarea><br>
+
+                    <label for="price">Приблезительная цена:</label>
+                    <input class="form-control" type="number" id="price" name="price" required><br>
+
+                    <label>Автор: </label>
+                    <select class="form-select" name="authorModelid">
+                        <option th:each="author : ${authors}" th:value="${author.id}"
+                                th:text="${author.name }">
+                        </option>
+                    </select>
+                    <br>
+                    <label>Жанры:</label>
+                    <div   class="form-check" th:each="genre : ${genres}">
+                        <input required class="form-check-input  " type="checkbox" id="genre" name="genres" th:value="${genre.id}">
+                        <label class="form-check-label" th:text="${genre.name}"></label><br>
+                    </div>
+                    <br>
+                    <button class="btn btn-success btn-sm ">Добавить на сайт</button>
+                </form>
+            </div>
+            <div class="col-sm-6 ps-3">
+                <h5>Последние 10 добавленных книг</h5>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Автор</th>
+                        <th style="width: 10%;">Изменить</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="book, iterStat : ${books}" th:if="${iterStat.index} &lt; 10">
+                        <td th:text="${book.name}"></td>
+                        <td th:text="${book.author.name}"></td>
+                        <td>
+                            <a th:href="@{'/details/' + ${book.id}}" class="btn btn-primary btn-sm">Перейти</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+</html>

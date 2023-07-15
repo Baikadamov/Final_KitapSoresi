@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main_layout.html">
+
+<div layout:fragment="siteContent">
+    <div class="container mt-5">
+        <div class="filter-container">
+            <div class="filter" style="height: 500px">
+                <h4 class="text-center mt-2">Filter</h4>
+                <hr>
+                <div class="p-2">
+                    <form action="/books/filter" method="GET">
+                        <div class="form-group mb-2">
+                            <label for="author">Автор:</label>
+                            <select class="form-control" id="author" name="author">
+                                <option value="">Все авторы</option>
+                                <option th:each="author : ${authors}" th:value="${author.id}"
+                                        th:text="${author.name}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label for="year">Год:</label>
+                            <select class="form-control" id="year" name="year">
+                                <option value="">Все года</option>
+                                <option th:each="book : ${books}" th:value="${book.year}"
+                                        th:text="${book.year}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label for="genre">Жанр:</label>
+                            <select class="form-control" id="genre" name="genre">
+                                <option value="">Все жанры</option>
+                                <option th:each="genre : ${genres}" th:value="${genre.id}"
+                                        th:text="${genre.name}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label for="point">Оценка:</label>
+                            <select class="form-control" id="point" name="point">
+                                <option value="">Все оценки</option>
+                                <option th:each="book : ${books}" th:value="${book.point}"
+                                        th:text="${book.point}"></option>
+                            </select>
+                        </div>
+                        <div class="d-grid gap-2 mt-2">
+                            <button type="submit" class="btn btn-sm btn-secondary">отфильтровать<i
+                                    class="bi bi-filter"></i>
+                            </button>
+                        </div>
+                        <div class="d-grid gap-2 mt-2">
+                            <a href="/books" class="btn btn-sm btn-outline-dark"> Все книги</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            <div class="books-list mb-3">
+                <div class="row row-cols-1 row-cols-md-4 row-cols-lg-5 g-4">
+                    <div th:each="book : ${filteredBooks}" class="col-6 col-md-6 col-lg-3">
+                        <div class="card h-100 card-anim">
+                            <img th:if="${book.photo}" th:src="@{'/viewphoto/'+ ${book.photo}}"
+                                 style="object-fit: cover; height: 300px" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${book.name}"></h5>
+                                <b>Автор:</b> <span th:text="${book.author.name}"></span>
+                                <br>
+                                <b>Жанр:</b>
+                                <span th:each="genre : ${book.genre}" th:text="${genre.name} + ' '"></span>
+                            </div>
+                            <div class="card-footer">
+                                <a th:href="@{'/details/' + ${book.id}}" class="btn btn-primary btn-sm">Подробнее</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+</html>

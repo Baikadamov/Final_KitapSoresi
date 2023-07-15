@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="main_layout.html">
+
+<div layout:fragment="siteContent">
+    <div class="container p-3 " >
+        <div class="row">
+            <div class="col-sm-3">
+                <div>
+                    <img class="book-picture" width="300" th:if="${book.photo}"
+                         th:src="@{'/viewphoto/'+ ${book.photo}}">
+                </div>
+            </div>
+            <div class="col-sm-9">
+                <div class="about-text mt-1 mx-auto pe-2">
+                    <div class="d-flex">
+                        <div>
+                            <h3 th:text="${book.name}"></h3>
+                        </div>
+                        <div class="ms-auto" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                            <div class="dropdown d-flex">
+                                <a class="btn btn-sm btn-success dropdown-toggle" role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+                                    Изменить
+                                </a>
+                                <div class="dropdown-menu p-2" style="width: 230px">
+                                    <div class="mt-2" style="background-color: #f8f9fa;">
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                                data-bs-target="#deletebook">
+                                            Удалить Обзор
+                                        </button>
+                                    </div>
+                                    <div class="mt-2 mx-auto" style="background-color: #f8f9fa;">
+                                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#editbook">
+                                            Редактировать книгу
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h5><strong>Автор: </strong> <span th:text="${book.author.name}"></span></h5>
+                    <h6>
+                        <strong>Жанр:</strong>
+                        <span th:each="genres : ${book.genre}" th:text="${genres.name + ', '}">
+                            </span>
+                    </h6>
+                    <p><strong>Приблизительная цена на книгу: </strong><span th:text="${book.price}"></span> Тенге</p>
+                </div>
+
+
+                <!--                Modal for delete book-->
+                <div class="modal fade" id="deletebook" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Заголовок модального окна</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Закрыть"></button>
+                            </div>
+                            <form th:action="@{'/delete-book'}" method="post">
+                                <div class="modal-body">
+                                    <input type="hidden" name="id" th:value="${book.id}">
+                                    <h5 class="text-center">Вы уверены?</h5>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO
+                                    </button>
+                                    <button class="btn btn-danger">YES</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Modal for edit book -->
+                <div class="modal fade" id="editbook" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="updateModalLabel">Отредактировать обзор
+                                </h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Закрыть"></button>
+                            </div>
+                            <div class="modal-body p-3">
+                                <form class="form" method="POST" enctype="multipart/form-data" action="/save-book">
+
+                                    <label for="name">Название:</label>
+                                    <input class="form-control" type="text" th:value="${book.name}" id="name" name="name" required>
+
+                                    <label for="year">Год выпуска:</label>
+                                    <input class="form-control" type="number" th:value="${book.year}" id="year" name="year" required>
+
+                                    <label for="point">Итоговая оценка:</label>
+                                    <input class="form-control" type="number" th:value="${book.point}" id="point" name="point" required>
+
+                                    <label for="photo">Изображение:</label>
+                                    <input class="form-control" type="file" id="photo" name="photo" required>
+
+                                    <label for="description">Обзор:</label>
+                                    <textarea rows="5" class="form-control" th:text="${book.description}" id="description" name="description"
+                                              required></textarea>
+
+                                    <label for="price">Приблизительная цена:</label>
+                                    <input class="form-control" type="number" th:value="${book.price}" id="price" name="price" required>
+
+                                    <label>Автор:</label>
+                                    <select class="form-select" name="authorModelid">
+                                        <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.name}"></option>
+                                    </select>
+                                    <br>
+                                    <label>Жанры:</label>
+                                    <div class="form-check" th:each="genre : ${genres}">
+                                        <input required class="form-check-input" type="checkbox" id="genre" name="genres"
+                                               th:value="${genre.id}" >
+                                        <label class="form-check-label" th:text="${genre.name}"></label>
+                                    </div>
+                                    <br>
+                                    <button class="btn btn-success btn-sm" type="submit">Обновить</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="mt-5">
+            <p><strong>Наш обзор: </strong><span th:text="${book.description}"></span></p>
+        </div>
+        <div class="mt-3">
+            <p><strong>Итоговая оценка: </strong><span th:text="${book.price}"></span></p>
+        </div>
+    </div>
+
+</div>
+
+</html>
