@@ -6,12 +6,21 @@
 <div layout:fragment="siteContent">
     <div class="container mt-5">
         <div class="filter-container">
-            <div class="filter" style="height: 500px">
-                <h4 class="text-center mt-2">Filter</h4>
+            <div class="filter" style="height: 580px">
+                <h4 class="text-center mt-2">Фильтр</h4>
                 <hr>
                 <div class="p-2">
-                    <form action="/books/filter" method="GET">
-
+                    <form action="/books/search" method="GET" class="" role="search">
+                        <label for="keyword">Поиск книги</label>
+                        <input class="form-control me-2" id="keyword" name="keyword" type="search"
+                               aria-label="Поиск">
+                        <div class="d-grid gap-2 mt-2">
+                            <button class="btn  btn-sm btn-outline-secondary" type="submit">Найти <i
+                                    class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <form action="/books/filter" class="mt-3" method="GET">
                         <div class="form-group mb-2">
                             <label for="author">Автор:</label>
                             <select class="form-control" id="author" name="author">
@@ -31,15 +40,6 @@
                         </div>
 
                         <div class="form-group mb-2">
-                            <label for="point">Оценка:</label>
-                            <select class="form-control" id="point" name="point">
-                                <option value="">Все оценки</option>
-                                <option th:each="book : ${books}" th:value="${book.point}"
-                                        th:text="${book.point}"></option>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-2">
                             <label for="genre">Жанр:</label>
                             <select class="form-control" id="genre" name="genre">
                                 <option value="">Все жанры</option>
@@ -48,8 +48,16 @@
                             </select>
                         </div>
 
+                        <div class="form-group mb-2">
+                            <label for="point">Оценка:</label>
+                            <select class="form-control" id="point" name="point">
+                                <option value="">Все оценки</option>
+                                <option th:each="book : ${books}" th:value="${book.point}"
+                                        th:text="${book.point}"></option>
+                            </select>
+                        </div>
                         <div class="d-grid gap-2 mt-2">
-                            <button type="submit" class="btn btn-sm btn-secondary">отфильтровать<i
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">отфильтровать<i
                                     class="bi bi-filter"></i>
                             </button>
                         </div>

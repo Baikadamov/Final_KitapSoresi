@@ -12,11 +12,8 @@ import java.util.List;
 @Repository
 public interface BooksRepository extends JpaRepository<Books, Long> {
 
-  List<Books> findByAuthorId(Long authorId);
 
-  List<Books> findByYear(int year);
-
-  List<Books> findByPoint(int point);
+  List<Books> findByNameContainingIgnoreCase(String keyword);
 
 
   @Query("SELECT b FROM Books b " +

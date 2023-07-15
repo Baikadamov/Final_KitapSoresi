@@ -17,14 +17,17 @@ public class BooksService {
   private final GenreService genreService;
 
 
-  public List<Books> filterBooks(Long genreId, Long authorId, Integer year , Integer point) {
-    if (genreId == null && authorId == null && year == null) {
+  public List<Books> filterBooks(Long genreId, Long authorId, Integer year, Integer point) {
+    if (genreId == null && authorId == null && year == null && point == null) {
       return booksRepository.findAll();
     } else {
-      return booksRepository.filterBooks(genreId, authorId, year ,point);
+      return booksRepository.filterBooks(genreId, authorId, year, point);
     }
   }
 
+  public List<Books> searchBooks(String keyword) {
+    return booksRepository.findByNameContainingIgnoreCase(keyword);
+  }
 
 
   public Books addBook(Books books) {

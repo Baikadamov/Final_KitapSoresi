@@ -43,9 +43,9 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto  mb-2 mb-lg-0">
-                <form action="/search" method="post" class="d-flex m-0" role="search">
+                <form action="/books/search" method="GET"   class="d-flex m-0" role="search">
                     <!--                    {% csrf_token %}-->
-                    <input class="form-control me-2" name="username" type="search" placeholder="Поиск книги"
+                    <input class="form-control me-2" name="keyword" type="search" placeholder="Поиск книги"
                            aria-label="Поиск">
                     <button class="btn " style="background: #E4F64A" type="submit">Найти</button>
                 </form>

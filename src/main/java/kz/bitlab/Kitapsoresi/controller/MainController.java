@@ -114,11 +114,27 @@ public class MainController {
 
     model.addAttribute("filteredBooks", booksService.filterBooks(genreId, authorId, year, point));
     model.addAttribute("books", booksService.getAllBooks());
+    model.addAttribute("searchedBooks", null);
     model.addAttribute("genres", genreService.getGenres());
     model.addAttribute("authors", authorService.getAuthors());
 
     return "books-filtered";
   }
+
+
+  @GetMapping("/books/search")
+  public String searchBooks(@RequestParam("keyword") String keyword, Model model) {
+    List<Books> searchedBooks = booksService.searchBooks(keyword);
+    model.addAttribute("searchedBooks", searchedBooks);
+    model.addAttribute("books", booksService.getAllBooks());
+    model.addAttribute("genres", genreService.getGenres());
+    model.addAttribute("authors", authorService.getAuthors());
+    return "books-filtered";
+  }
+
+
+
+
 
 
   @PostMapping(value = "/books/add")
