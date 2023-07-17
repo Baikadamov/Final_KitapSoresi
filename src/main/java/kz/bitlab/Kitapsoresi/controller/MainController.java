@@ -5,10 +5,7 @@ import kz.bitlab.Kitapsoresi.model.Author;
 import kz.bitlab.Kitapsoresi.model.Books;
 import kz.bitlab.Kitapsoresi.model.Genre;
 import kz.bitlab.Kitapsoresi.model.User;
-import kz.bitlab.Kitapsoresi.service.AuthorService;
-import kz.bitlab.Kitapsoresi.service.BooksService;
-import kz.bitlab.Kitapsoresi.service.GenreService;
-import kz.bitlab.Kitapsoresi.service.UserService;
+import kz.bitlab.Kitapsoresi.service.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
@@ -39,6 +36,7 @@ public class MainController {
   private final BooksService booksService;
   private final AuthorService authorService;
   private final GenreService genreService;
+  private final BlogService blogService;
 
 
   @Value("${file.books.viewPath}")
@@ -59,6 +57,10 @@ public class MainController {
     return "index";
   }
 
+  @GetMapping(value = "/blog")
+  public String blog() {
+    return "blog";
+  }
 
   @GetMapping(value = "/details/{booksId}")
   public String bookDetails(@PathVariable(name = "booksId") Long id, Model model) {
@@ -87,6 +89,7 @@ public class MainController {
     model.addAttribute("books", latestBooks);
     model.addAttribute("bookCount", booksService.getBooksCount());
     model.addAttribute("usersCount", userService.getUsersCount());
+    model.addAttribute("blog", blogService.getBlogs());
     return "admin";
   }
 
@@ -99,10 +102,6 @@ public class MainController {
     return "books";
   }
 
-  @GetMapping(value = "/posts")
-  public String posts() {
-    return "posts";
-  }
 
   @GetMapping("/books/filter")
   public String filterBooks(@RequestParam(value = "genre", required = false) Long genreId,
@@ -131,10 +130,6 @@ public class MainController {
     model.addAttribute("authors", authorService.getAuthors());
     return "books-filtered";
   }
-
-
-
-
 
 
   @PostMapping(value = "/books/add")

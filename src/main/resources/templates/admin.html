@@ -19,15 +19,14 @@
                 <strong> <span th:text="${usersCount}"> </span> </strong>
             </div>
             <div>
-                Количество постов на сайте :
-                <strong> <span th:text="${usersCount}"></span> </strong>
+                Количество статьей на сайте :
+                <strong> <span th:text="${blog.size()}"></span> </strong>
             </div>
-
         </div>
         <hr>
 
-        <div class="mt-5 d-flex justify-content-center">
-            <div class="col-sm-6 pe-2">
+        <div class="mt-5 d-flex justify-content-between">
+            <div class="col-sm-5  ">
                 <h5>Добавить новый обзор на книгу</h5>
                 <form class="form" method="POST" enctype="multipart/form-data" action="/books/add">
                     <label for="name">Название:</label>
@@ -57,12 +56,13 @@
                     </select>
                     <br>
                     <label>Жанры:</label>
-                    <div   class="form-check" th:each="genre : ${genres}">
-                        <input required class="form-check-input  " type="checkbox" id="genre" name="genres" th:value="${genre.id}">
+                    <div class="form-check" th:each="genre : ${genres}">
+                        <input required class="form-check-input  " type="checkbox" id="genre" name="genres"
+                               th:value="${genre.id}">
                         <label class="form-check-label" th:text="${genre.name}"></label><br>
                     </div>
                     <br>
-                    <button class="btn btn-success btn-sm ">Добавить на сайт</button>
+                    <button class="btn btn-warning btn-sm ">Добавить на сайт</button>
                 </form>
             </div>
             <div class="col-sm-6 ps-3">
@@ -87,8 +87,130 @@
                 </table>
             </div>
         </div>
+    </div>
+
+    <hr>
+    <div class="d-flex justify-content-between mt-5 mb-5">
+        <div class="col-sm-5 mt-2 ">
+            <h5>Добавить новую статью на сайт</h5>
+            <div class="form-group mt-2">
+                <div class="col-12">
+                    <label>Название статьи : </label>
+                    <input type="text" required class="form-control" id="title">
+                </div>
+            </div>
+            <div class="form-group mt-2">
+                <div class="col-12">
+                    <label>Текст : </label>
+                    <textarea class="form-control" required rows="7" id="caption"></textarea>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <button class="btn btn-warning btn-sm" onclick="addBlog()"> Добавить</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 ps-3">
+            <h5>Последние 10 добавленных книг</h5>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Название</th>
+                    <th>Текст</th>
+                    <th>Дата</th>
+                </tr>
+                </thead>
+                <tbody id="blogListBody">
+                </tbody>
+            </table>
+            <div class="d-flex ">
+                <button class="btn btn-sm btn-primary ms-auto">
+                    Перейти к статьям
+                </button>
+            </div>
+
+
+        </div>
+        <script type="text/javascript">
+            function truncateWords(sentence, limit) {
+                const words = sentence.split(' ');
+
+                if (words.length <= limit) {
+                    return sentence;
+                }
+
+                const truncatedWords = words.slice(0, limit);
+                const truncatedSentence = truncatedWords.join(' ');
+
+                return truncatedSentence + '...';
+            }
+
+            loadBlogs();
+            function loadBlogs() {
+                const httpRequest = new XMLHttpRequest();
+
+                httpRequest.open("GET", "/blogs?limit=10", true);
+                httpRequest.onreadystatechange = function () {
+                    if (httpRequest.readyState === XMLHttpRequest.DONE && httpRequest.status === 200) {
+                        let blogsList = JSON.parse(httpRequest.responseText);
+
+                        // Sort blogs in descending order based on createdAt timestamp
+                        blogsList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                        let tableContent = "";
+
+                        for (let i = 0; i < blogsList.length; i++) {
+                            tableContent += "<tr>";
+                            tableContent += "<td>" + blogsList[i].id + "</td>";
+                            tableContent += "<td>" + blogsList[i].title + "</td>";
+                            const truncatedCaption = truncateWords(blogsList[i].caption, 5);
+                            tableContent += "<td>" + truncatedCaption + "</td>";
+
+                            tableContent += "<td>" + blogsList[i].createdAt + "</td>";
+                            tableContent += "</tr>";
+                        }
+                        document.getElementById("blogListBody").innerHTML = tableContent;
+                    }
+                };
+                httpRequest.send();
+            }
+        </script>
+
 
     </div>
+    <script type="text/javascript">
+        function addBlog() {
+            const httpRequest = new XMLHttpRequest();
+            httpRequest.open("POST", "/blogs", true);
+            httpRequest.setRequestHeader("Content-Type", "application/json");
+
+            let title = document.getElementById("title");
+            let caption = document.getElementById("caption");
+
+            // Get the current date and time
+            let now = new Date();
+            let createdAt = now.toISOString().slice(0, 16); // Format: "YYYY-MM-DDTHH:mm"
+
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.readyState === XMLHttpRequest.DONE && httpRequest.status === 200) {
+                    title.value = "";
+                    caption.value = "";
+                    loadBlogs();
+                }
+            };
+
+            let body = {
+                'title': title.value,
+                'caption': caption.value,
+                'createdAt': createdAt,
+            };
+
+            body = JSON.stringify(body);
+            httpRequest.send(body);
+        }
+    </script>
 
 
 </div>

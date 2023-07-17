@@ -2,7 +2,6 @@ package kz.bitlab.Kitapsoresi.service;
 
 
 import kz.bitlab.Kitapsoresi.model.Author;
-import kz.bitlab.Kitapsoresi.model.Books;
 import kz.bitlab.Kitapsoresi.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

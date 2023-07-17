@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main_layout.html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div layout:fragment="siteContent">
+    <div class="container mt-2  ">
+        <div class="blog-main-header mb-4">
+            <b> Kitap<span style="color: #E4F64A">Soresi </span> </b> blog
+        </div>
+        <div class="row">
+            <div class="col-8 " id="blogListBody">
+
+
+            </div>
+            <div class="col-4">
+                <div class="blog px-3 py-2">
+                    <b> Добро пожаловать на страницу нашего блога о книгах! </b> Здесь вы найдете увлекательные обзоры,
+                    рекомендации и интересные статьи, посвященные миру литературы. Наша команда страстных книголюбов
+                    стремится поделиться с вами своими мыслями, отзывами и впечатлениями о самых увлекательных
+                    произведениях. Мы стараемся охватить различные жанры, авторов и эпохи, чтобы наш блог стал вашим
+                    надежным источником в мире литературы.
+                </div>
+
+                <div class="blog px-3 py-2  mt-4">
+                    Мы предлагаем широкий выбор статей о книгах, включая обзоры новых выпусков, классические
+                    произведения, самые популярные книжные серии и многое другое. Читайте наши статьи, чтобы получить
+                    полное представление о книге перед тем, как приступить к чтению, или чтобы найти следующую книгу для
+                    вашего списка желаний.
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно -->
+        <div class="modal fade" id="detailsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog  modal-xl">
+                <div class="modal-content" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel1">Редактировать</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class=" mx-auto px-2">
+                                <input type="hidden" class="form-control" id="blogId">
+                                <div class="form-group mt-1 mb-1">
+                                    <label> Название блога</label>
+                                    <input type="text" class="form-control" id="titleDetails">
+                                </div>
+                                <div class="form-group mt-1 mb-1">
+                                    <label> Текст</label>
+                                    <textarea rows="10" class="form-control" id="captionDetails"> </textarea>
+                                </div>
+                                <div class="form-group mt-1 mb-1">
+                                    <label> Время</label>
+                                    <input type="datetime-local" class="form-control" id="createdAtDetails">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" onclick="deleteBlog()">Удалить</button>
+                        <button type="button" class="btn btn-primary" onclick="updateBlog()">Сохранить</button>
+                    </div>
+                </div>
+                <div class="modal-content" sec:authorize="!hasAnyRole('ROLE_ADMIN')">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel2">Cтатья</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class=" mx-auto px-2">
+                                <input type="hidden" readonly class="form-control" id="blogId">
+                                <div class="form-group mt-1 mb-1">
+                                    <h3 id="titleDetails"></h3>
+                                </div>
+                                <div class="form-group mt-1 mb-1">
+                                    <div class="form-group mt-1 mb-1" id="captionDetails"></div>
+                                </div>
+                                <div class="form-group mt-1 mb-1">
+                                    Дата:
+                                    <span id="createdAtDetails"> </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            function updateBlog() {
+
+                const httpRequest = new XMLHttpRequest();
+                httpRequest.open("PUT", "/blogs", true);
+                httpRequest.setRequestHeader("Content-Type", "application/json");
+
+                let blogId = document.getElementById("blogId");
+                let title = document.getElementById("titleDetails");
+                let caption = document.getElementById("captionDetails");
+                let createdAt = document.getElementById("createdAtDetails");
+
+                httpRequest.onreadystatechange = function () {
+                    if (httpRequest.readyState === XMLHttpRequest.DONE && httpRequest.status === 200) {
+                        loadBlogs();
+                    }
+                };
+
+                let body = {
+                    'id': blogId.value,
+                    'title': title.value,
+                    'caption': caption.value,
+                    'createdAt': createdAt.value
+                };
+
+                body = JSON.stringify(body);
+                httpRequest.send(body);
+            }
+
+            function deleteBlog() {
+
+                let approve = confirm("Вы уверены?");
+
+                if (approve) {
+
+                    let blogId = document.getElementById("blogId");
+
+                    const httpRequest = new XMLHttpRequest();
+                    httpRequest.open("DELETE", "/blogs/" + blogId.value, true);
+
+                    httpRequest.onreadystatechange = function () {
+                        if (httpRequest.readyState === XMLHttpRequest.DONE && httpRequest.status === 200) {
+                            detailsModal.hide();
+                            loadBlogs();
+                        }
+                    };
+
+                    httpRequest.send();
+                }
+
+            }
+        </script>
+
+
+    </div>
+
+    <script type="text/javascript">
+
+
+        function truncateWords(sentence, limit) {
+            const words = sentence.split(' ');
+
+            if (words.length <= limit) {
+                return sentence;
+            }
+
+            const truncatedWords = words.slice(0, limit);
+            const truncatedSentence = truncatedWords.join(' ');
+
+            return truncatedSentence + '...';
+        }
+
+        loadBlogs();
+
+        function loadBlogs() {
+            const httpRequest = new XMLHttpRequest();
+
+            httpRequest.open("GET", "/blogs", true);
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.readyState === XMLHttpRequest.DONE && httpRequest.status === 200) {
+                    let blogsList = JSON.parse(httpRequest.responseText);
+                    blogsList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    let cardContent = "";
+
+                    for (let i = 0; i < blogsList.length; i++) {
+                        const truncatedCaption = truncateWords(blogsList[i].caption, 110);
+
+                        cardContent += "<div class='blog mb-5'>";
+                        cardContent += "<div class='blog-header d-flex'>";
+                        cardContent += "<h5 class='card-title' style='text-transform: capitalize;'>"
+                            + blogsList[i].title + "</h5>";
+                        cardContent += "<button class='btn btn-sm btn-outline-light ms-auto' " +
+                            "onclick='openBlogDetailsModal(" + blogsList[i].id + ")'> Подробнее </button>";
+                        cardContent += "</div>";
+                        cardContent += "<div class='blog-body'>";
+                        cardContent += "<p class='blog-text'>" + paragraphs(truncatedCaption) + "</p>";
+                        cardContent += "</div>";
+                        cardContent += "<div class='blog-footer text-muted'> ";
+                        cardContent += blogsList[i].createdAt;
+                        cardContent += "</div>";
+                        cardContent += "</div>";
+                    }
+                    document.getElementById("blogListBody").innerHTML = cardContent;
+                }
+            };
+            httpRequest.send();
+        }
+
+        // Function to wrap text in paragraphs
+        function paragraphs(text) {
+            const paragraphs = text.split('\n\n');
+            const wrappedText = paragraphs.map(paragraph => `<p>${paragraph}</p>`).join('');
+            return wrappedText;
+        }
+
+
+        function openBlogDetailsModal(id) {
+            detailsModal = new bootstrap.Modal(document.getElementById('detailsModal'));
+
+            const httpRequest = new XMLHttpRequest();
+            httpRequest.open("GET", "/blogs/" + id, true);
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.readyState === XMLHttpRequest.DONE && httpRequest.status === 200) {
+                    let result = JSON.parse(httpRequest.responseText);
+                    titleDetails.textContent = result.title;
+                    captionDetails.innerHTML  = paragraphs(result.caption);
+                    createdAtDetails.textContent = result.createdAt;
+                    titleDetails.value = result.title;
+                    captionDetails.value = result.caption;
+                    createdAtDetails.value = result.createdAt;
+                    blogId.value = result.id;
+                    detailsModal.show();
+                }
+            };
+            httpRequest.send();
+        }
+
+
+    </script>
+</div>
+
+</html>
