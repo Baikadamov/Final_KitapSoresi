@@ -14,11 +14,11 @@
                     <a class="nav-link active" aria-current="page" th:href="@{'/books'}">Книги</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active text-danger" aria-current="page" sec:authorize="hasAnyRole('ROLE_ADMIN')"
-                       th:href="@{'/admin'}">Модерирование</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{'/blog'}">Наш Блог</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{'/blog'}">Наш Блог</a>
+                    <a class="nav-link active text-danger" aria-current="page" sec:authorize="hasAnyRole('ROLE_ADMIN')"
+                       th:href="@{'/admin'}">Модерация</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" sec:authorize="isAnonymous()" aria-current="page" th:href="@{'/login'}">Войти</a>
@@ -30,13 +30,13 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" th:href="@{'/profile'}">Профиль</a></li>
-                        <li><a class="dropdown-item" th:href="@{'/update-password-page'}">Update Password</a></li>
+                        <li><a class="dropdown-item" th:href="@{'/update-password-page'}">Сменить пароль</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
                             <form th:action="@{'/sign-out'}" method="post">
-                                <button class="dropdown-item">Sign Out</button>
+                                <button class="dropdown-item">Выйти из аккаунта</button>
                             </form>
                         </li>
                     </ul>

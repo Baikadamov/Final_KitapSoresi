@@ -57,7 +57,7 @@
                     <br>
                     <label>Жанры:</label>
                     <div class="form-check" th:each="genre : ${genres}">
-                        <input required class="form-check-input  " type="checkbox" id="genre" name="genres"
+                        <input class="form-check-input  " type="checkbox" id="genre" name="genres"
                                th:value="${genre.id}">
                         <label class="form-check-label" th:text="${genre.name}"></label><br>
                     </div>

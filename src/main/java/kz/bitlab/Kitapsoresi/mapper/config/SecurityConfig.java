@@ -1,4 +1,4 @@
-package kz.bitlab.Kitapsoresi.config;
+package kz.bitlab.Kitapsoresi.mapper.config;
 
 import kz.bitlab.Kitapsoresi.service.UserService;
 import org.springframework.context.annotation.Bean;

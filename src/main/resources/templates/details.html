@@ -5,20 +5,24 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="main_layout.html">
 
 <div layout:fragment="siteContent">
-    <div class="container p-3 " >
-        <div class="row">
-            <div class="col-sm-3">
+    <div class="container p-3 ">
+        <div class="d-flex justify-content-between">
+            <div class="col-sm-4">
                 <div>
-                    <img class="book-picture" width="300" th:if="${book.photo}"
+                    <img class="book-picture" width="320" th:if="${book.photo}"
                          th:src="@{'/viewphoto/'+ ${book.photo}}">
                 </div>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-8">
                 <div class="about-text mt-1 mx-auto pe-2">
                     <div class="d-flex">
                         <div>
                             <h3 th:text="${book.name}"></h3>
+                            <div>
+                                <p style="font-size: 20px"><strong>Автор: </strong> <span th:text="${book.author.name}"></span></p>
+                            </div>
                         </div>
+
                         <div class="ms-auto" sec:authorize="hasAnyRole('ROLE_ADMIN')">
                             <div class="dropdown d-flex">
                                 <a class="btn btn-sm btn-success dropdown-toggle" role="button"
@@ -43,15 +47,9 @@
                             </div>
                         </div>
                     </div>
-
-                    <hr>
-                    <h5><strong>Автор: </strong> <span th:text="${book.author.name}"></span></h5>
-                    <h6>
-                        <strong>Жанр:</strong>
-                        <span th:each="genres : ${book.genre}" th:text="${genres.name + ', '}">
-                            </span>
-                    </h6>
-                    <p><strong>Приблизительная цена на книгу: </strong><span th:text="${book.price}"></span> Тенге</p>
+                    <div class="mt-2">
+                        <p style="font-size: 18px"><span th:text="${book.description}"></span></p>
+                    </div>
                 </div>
 
 
@@ -96,33 +94,40 @@
                                 <form class="form" method="POST" enctype="multipart/form-data" action="/save-book">
 
                                     <label for="name">Название:</label>
-                                    <input class="form-control" type="text" th:value="${book.name}" id="name" name="name" required>
+                                    <input class="form-control" type="text" th:value="${book.name}" id="name"
+                                           name="name" required>
 
                                     <label for="year">Год выпуска:</label>
-                                    <input class="form-control" type="number" th:value="${book.year}" id="year" name="year" required>
+                                    <input class="form-control" type="number" th:value="${book.year}" id="year"
+                                           name="year" required>
 
                                     <label for="point">Итоговая оценка:</label>
-                                    <input class="form-control" type="number" th:value="${book.point}" id="point" name="point" required>
+                                    <input class="form-control" type="number" th:value="${book.point}" id="point"
+                                           name="point" required>
 
                                     <label for="photo">Изображение:</label>
                                     <input class="form-control" type="file" id="photo" name="photo" required>
 
                                     <label for="description">Обзор:</label>
-                                    <textarea rows="5" class="form-control" th:text="${book.description}" id="description" name="description"
+                                    <textarea rows="5" class="form-control" th:text="${book.description}"
+                                              id="description" name="description"
                                               required></textarea>
 
                                     <label for="price">Приблизительная цена:</label>
-                                    <input class="form-control" type="number" th:value="${book.price}" id="price" name="price" required>
+                                    <input class="form-control" type="number" th:value="${book.price}" id="price"
+                                           name="price" required>
 
                                     <label>Автор:</label>
                                     <select class="form-select" name="authorModelid">
-                                        <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.name}"></option>
+                                        <option th:each="author : ${authors}" th:value="${author.id}"
+                                                th:text="${author.name}"></option>
                                     </select>
                                     <br>
                                     <label>Жанры:</label>
                                     <div class="form-check" th:each="genre : ${genres}">
-                                        <input required class="form-check-input" type="checkbox" id="genre" name="genres"
-                                               th:value="${genre.id}" >
+                                        <input required class="form-check-input" type="checkbox" id="genre"
+                                               name="genres"
+                                               th:value="${genre.id}">
                                         <label class="form-check-label" th:text="${genre.name}"></label>
                                     </div>
                                     <br>
@@ -134,12 +139,15 @@
                 </div>
             </div>
         </div>
-        <hr>
-        <div class="mt-5">
-            <p><strong>Наш обзор: </strong><span th:text="${book.description}"></span></p>
-        </div>
-        <div class="mt-3">
-            <p><strong>Итоговая оценка: </strong><span th:text="${book.price}"></span></p>
+        <div class="mt-1 px-2">
+            <p style="font-size: 16px">
+                <strong>Жанр:</strong>
+                <span th:each="genres : ${book.genre}" th:text="${genres.name + '  '}">
+                            </span>
+            </p>
+            <p style="font-size: 16px"><strong>Средняя цена за книгу: </strong><span th:text="${book.price}"></span> Тенге</p>
+            <p style="font-size: 16px"><strong>Наша оценка: </strong><span th:text="${book.point}"></span>/10</p>
+            <p style="font-size: 16px"><strong>Год: </strong><span th:text="${book.year}"></span> </p>
         </div>
     </div>
 

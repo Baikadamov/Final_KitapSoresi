@@ -1,4 +1,4 @@
-package kz.bitlab.Kitapsoresi.api;
+package kz.bitlab.Kitapsoresi.controller;
 
 import kz.bitlab.Kitapsoresi.dto.BlogDTO;
 import kz.bitlab.Kitapsoresi.model.Blog;
