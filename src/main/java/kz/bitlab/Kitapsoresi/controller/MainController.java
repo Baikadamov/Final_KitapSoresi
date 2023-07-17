@@ -38,7 +38,6 @@ public class MainController {
   private final GenreService genreService;
   private final BlogService blogService;
 
-
   @Value("${file.books.viewPath}")
   private String viewPath;
 
@@ -275,7 +274,10 @@ public class MainController {
     return "profile";
   }
 
-
+  @GetMapping(value = "/403-page")
+  public String accessDenied() {
+    return "403";
+  }
   @GetMapping(value = "/update-password-page")
   public String updaetPasswordPage() {
     return "update-password";

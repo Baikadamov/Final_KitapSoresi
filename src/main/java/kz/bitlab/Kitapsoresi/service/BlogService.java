@@ -3,9 +3,7 @@ package kz.bitlab.Kitapsoresi.service;
 import kz.bitlab.Kitapsoresi.dto.BlogDTO;
 import kz.bitlab.Kitapsoresi.mapper.BlogMapper;
 import kz.bitlab.Kitapsoresi.model.Blog;
-import kz.bitlab.Kitapsoresi.model.Post;
 import kz.bitlab.Kitapsoresi.repository.BlogRepository;
-import kz.bitlab.Kitapsoresi.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

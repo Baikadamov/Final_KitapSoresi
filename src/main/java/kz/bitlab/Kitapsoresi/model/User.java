@@ -82,4 +82,12 @@ public class User implements UserDetails, Serializable {
   public boolean isEnabled() {
     return true;
   }
+
+  public int getPhoneNumber() {
+    return phone_number;
+  }
+
+  public void setPhoneNumber(int phone_number) {
+    this.phone_number = phone_number;
+  }
 }
